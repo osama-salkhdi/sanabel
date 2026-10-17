@@ -10,7 +10,13 @@
   "beneficiaries": "0",
   "tracks": "برمجة وروبوتيك, برمجة, روبوتيك"
  },
- "slides": [],
+ "slides": [
+  {
+   "id": "a7cc1683",
+   "image": "uploads/b19aad3523.webp",
+   "caption": ""
+  }
+ ],
  "projects": [],
  "achievements": [],
  "students": [
