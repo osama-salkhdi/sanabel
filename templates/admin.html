@@ -1,0 +1,28 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة التحكم</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&family=Rakkas&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/admin.css"></head><body>
+{% macro f() %}<input type="hidden" name="csrf" value="{{csrf}}">{% endmacro %}
+{% if v!='login' %}<aside><img src="/static/mark.png" alt=""><a href="/">الرئيسية</a>{% for k in C %}<a href="/c/{{k}}">{{C[k][0]}}</a>{% endfor %}<a href="/settings">الإعدادات</a><a href="/preview/" target="_blank">معاينة الموقع ↗</a><a href="/logout">خروج</a></aside>{% endif %}
+<main>{% for m in get_flashed_messages() %}<div class="msg">{{m}}</div>{% endfor %}
+{% if v=='login' %}<form method="post" class="box login"><img src="/static/mark.png" alt=""><h1>لوحة تحكم سنابل</h1>{{f()}}<input type="password" name="pw" placeholder="كلمة المرور" autofocus><button>دخول</button></form>
+{% elif v=='home' %}<h1>لوحة التحكم</h1>
+{% if default %}<div class="msg warn">كلمة المرور الحالية هي الافتراضية (sanabel123). غيّرها من «الإعدادات».</div>{% endif %}
+<div class="stats">{% for k in C %}<a href="/c/{{k}}"><b>{{ar(d[k]|length)}}</b>{{C[k][0]}}</a>{% endfor %}</div>
+<form method="post" class="box">{{f()}}<h2>تحديث الموقع</h2><p>بعد أي تعديل اضغط «بناء» ثم عاين الموقع، ثم «بناء ونشر» لرفعه إلى GitHub.</p>
+<button name="do" value="build">بناء الموقع</button> <button name="do" value="publish" class="gold">بناء ونشر على GitHub</button></form>
+{% if log %}<pre class="box">{{log}}</pre>{% endif %}
+{% elif v=='settings' %}<h1>الإعدادات</h1><form method="post" class="box">{{f()}}{% for k,l in F %}<label>{{l}}{% if k in ('about','vision') %}<textarea name="{{k}}" rows="3">{{d.settings[k]}}</textarea>{% else %}<input name="{{k}}" value="{{d.settings[k]}}">{% endif %}</label>{% endfor %}
+<label>كلمة مرور جديدة (اتركها فارغة إن لم ترد التغيير)<input type="password" name="pw"></label><button>حفظ</button></form>
+{% else %}{% set fl=C[c][1] %}<h1>{{C[c][0]}}</h1>
+<form method="post" enctype="multipart/form-data" action="/c/{{c}}/{{item.id or 'new'}}" class="box"><h2>{{'تعديل' if item.id and item.id!='new' else 'إضافة جديد'}}</h2>{{f()}}
+{% for k,l,t in fl %}<label>{{l}}
+{% if t=='img' %}{% if item.get(k) %}<img class="th" src="/preview/{{item[k]}}">{% endif %}<input type="file" name="{{k}}" accept="image/*">
+{% elif t=='area' %}<textarea name="{{k}}" rows="4">{{item.get(k,'')}}</textarea>
+{% elif t=='track' %}<select name="{{k}}">{% for x in tracks %}<option {{'selected' if item.get(k)==x}}>{{x}}</option>{% endfor %}</select>
+{% elif t=='pct' %}<span class="pv"><input type="range" name="{{k}}" min="0" max="100" value="{{item.get(k,0)}}" oninput="pp(this)"><b></b></span><small id="st"></small>
+{% else %}<input name="{{k}}" value="{{item.get(k,'')}}" {{'required' if loop.first}}>{% endif %}</label>{% endfor %}
+<button>حفظ</button>{% if item.id and item.id!='new' %} <a href="/c/{{c}}">إلغاء</a>{% endif %}</form>
+<div class="rows">{% for x in items %}<div class="row">{% set im=x.get('photo') or x.get('image') %}{% if im %}<img src="/preview/{{im}}">{% else %}<span class="ph"></span>{% endif %}
+<span><b>{{x.get('name') or x.get('title') or x.get('caption') or 'بدون عنوان'}}</b>{% if c=='students' %}<br><small>{{x.track}} — {{ar(x.percent)}}٪</small>{% endif %}</span>
+<a href="/c/{{c}}/{{x.id}}">تعديل</a><form method="post" action="/c/{{c}}/{{x.id}}" onsubmit="return confirm('حذف؟')">{{f()}}<input type="hidden" name="del" value="1"><button class="red">حذف</button></form></div>{% endfor %}</div>
+<script>const S={{stages|tojson}};function pp(e){const p=+e.value;e.nextElementSibling.textContent=p+'٪';const n=Math.min(6,Math.max(1,Math.ceil(p/16.667-1e-9)));document.getElementById('st').textContent='المرحلة '+n+' من 6: '+S[n-1];e.style.accentColor=p<34?'#d9bc8c':p<67?'#ba925f':'#214539'}document.querySelectorAll('input[type=range]').forEach(pp)</script>{% endif %}</main></body></html>
