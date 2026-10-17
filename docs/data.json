@@ -22,10 +22,10 @@
  "students": [
   {
    "id": "demo1",
-   "name": "حمزة باسم الفروان",
-   "photo": "",
-   "track": "برمجة وروبوتيك",
-   "percent": 80,
+   "name": "حلا ابو خشريف",
+   "photo": "uploads/70ebcf8665.webp",
+   "track": "برمجة",
+   "percent": 60,
    "note": ""
   },
   {
