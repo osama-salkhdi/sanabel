@@ -82,7 +82,7 @@ def build():
     return f"تم بناء الموقع ({len(studs)} طالب)"
 
 PAGES = ('index','students','projects','platform','achievements','about')
-app = Flask(__name__, static_folder='admin_static', template_folder='templates')
+app = Flask(__name__, static_folder='admin_static', static_url_path='/static', template_folder='templates')
 app.config.update(MAX_CONTENT_LENGTH=20*1024*1024, SESSION_COOKIE_SAMESITE='Lax', SESSION_COOKIE_SECURE=REMOTE)
 AF.parent.mkdir(exist_ok=True)
 if not AF.exists(): AF.write_text(json.dumps({"hash": generate_password_hash("sanabel123"), "default": True, "key": secrets.token_hex(16)}))
