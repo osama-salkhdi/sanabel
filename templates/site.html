@@ -3,40 +3,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&family=Rakkas&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css"></head><body>
 {% set nav=[('index','الرئيسية'),('students','طلابنا'),('projects','مشاريعنا'),('platform','منصة التدريب'),('achievements','إنجازاتنا'),('about','من نحن')] %}
-{% set icons=['<circle cx="11" cy="11" r="7"/><path d="m21 21-4-4M11 8v6M8 11h6"/>','<path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>','<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4M6 10h3l2-3 2 5 1-2h2"/>','<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>','<rect x="4" y="9" width="16" height="11" rx="3"/><path d="M12 9V5"/><circle cx="12" cy="4" r="1"/><path d="M9 14v1M15 14v1"/>','<path d="M7 20h10M12 20v-9"/><path d="M12 11c0-3 2-5 6-5 0 4-2 6-6 5ZM12 13c0-3-2-5-6-5 0 4 2 6 6 5Z"/>'] %}
-<header class="top"><a class="brand" href="index.html"><img src="assets/img/mark.png" alt=""><b>{{ s.name }}</b></a>
+<header class="top"><a class="brand" href="index.html"><img src="assets/img/mark.png" alt=""><b id="bn">{{ s.name }}</b></a>
 <button class="burger" aria-label="القائمة" onclick="document.body.classList.toggle('open')">☰</button>
 <nav>{% for k,t in nav %}<a href="{{k}}.html" {% if k==page %}class="on"{% endif %}>{{t}}</a>{% endfor %}</nav></header>
-
-{% macro stairs() %}<ol class="stairs">{% for t in stages %}<li class="st{{loop.index}}{{' last' if loop.last}}"><span class="n">{{loop.index|ar}}</span>
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{{icons[loop.index0]|safe}}</svg><p>{{t}}</p></li>{% endfor %}</ol>{% endmacro %}
-
-{% macro card(x) %}<article class="stu" data-track="{{x.track}}" data-id="{{x.id}}" tabindex="0">
-<div class="ph">{% if x.photo %}<img src="{{x.photo}}" alt="{{x.name}}" loading="lazy">{% else %}<span>{{x.name[:1]}}</span>{% endif %}</div>
-<h3>{{x.name}}</h3><em>{{x.track}}</em><p>المرحلة {{x.stage|ar}} من ٦: {{stages[x.stage-1]}}</p>
-<div class="bar" style="--p:{{[x.percent,1]|max}}" title="{{x.percent|ar}}٪ من خارطة الطريق"><i></i><b>{{x.percent|ar}}٪</b></div></article>{% endmacro %}
-
-<main>
-{% if page=='index' %}
-<section class="hero">{% for sl in d.slides %}<figure class="slide{{' on' if loop.first}}"><img src="{{sl.image}}" alt="{{sl.caption}}"><figcaption>{{sl.caption}}</figcaption></figure>{% endfor %}
-<div class="veil"><img class="big" src="assets/img/logo.png" alt="" {% if d.slides %}hidden{% endif %}><h1>{{ s.name }}</h1><p>{{ s.tagline }}</p><a class="btn" href="students.html">تعرّف على طلابنا</a></div>
-{% if d.slides|length>1 %}<div class="dots"></div>{% endif %}</section>
-<section class="wrap"><h2>خطة الطريق</h2><p class="sub">مراحل التعلّم في {{ s.name }}: يبدأ كل طالب بمسار البرمجة والروبوتيك ويصعد مرحلة بعد مرحلة</p>{{ stairs() }}</section>
-<section class="wrap nums"><h2>المستفيدون من الأكاديمية</h2>
-<div class="cnt"><div><b>{{ (s.beneficiaries|int)|ar }}</b>مستفيد</div><div><b>{{ studs|length|ar }}</b>طالب متابَع</div><div><b>{{ d.projects|length|ar }}</b>مشروع</div><div><b>{{ d.achievements|length|ar }}</b>إنجاز</div></div>
-<div class="faces">{% for x in studs[:14] %}<span>{% if x.photo %}<img src="{{x.photo}}" alt="{{x.name}}">{% else %}{{x.name[:1]}}{% endif %}</span>{% endfor %}</div></section>
-{% elif page=='students' %}
-<section class="wrap"><h1>طلابنا</h1><p class="sub">كل بطاقة تُظهر المسار والمرحلة التي وصل إليها الطالب ونسبة إنجازه من خارطة الطريق</p>
-<div class="filters"><button class="on" data-f="">الكل</button>{% for t in tracks %}<button data-f="{{t}}">{{t}}</button>{% endfor %}</div>
-<div class="grid">{% for x in studs %}{{ card(x) }}{% else %}<p class="empty">لم تُضف طلاب بعد.</p>{% endfor %}</div></section>
-<section class="wrap"><h2>خارطة الطريق</h2>{{ stairs() }}</section>
-{% elif page=='projects' %}
-<section class="wrap"><h1>مشاريعنا</h1><div class="grid g2">{% for p in d.projects %}<article class="pr">{% if p.image %}<img src="{{p.image}}" alt="{{p.title}}" loading="lazy">{% endif %}<h3>{{p.title}}</h3><p>{{p.desc}}</p></article>{% else %}<p class="empty">ستظهر المشاريع هنا قريباً.</p>{% endfor %}</div></section>
-{% elif page=='platform' %}
-<section class="wrap soon"><img src="assets/img/logo.png" alt=""><h1>منصة التدريب</h1><p class="big">قريباً</p></section>
-{% elif page=='achievements' %}
-<section class="wrap"><h1>إنجازاتنا</h1><div class="grid g2">{% for a in d.achievements|reverse %}<article class="pr">{% if a.image %}<img src="{{a.image}}" alt="{{a.title}}" loading="lazy">{% endif %}<h3>{{a.title}}</h3><small>{{a.date}}</small><p>{{a.desc}}</p></article>{% else %}<p class="empty">ستظهر الإنجازات هنا قريباً.</p>{% endfor %}</div></section>
-{% else %}
-<section class="wrap about"><h1>من نحن</h1><p>{{ s.about }}</p><h2>رؤيتنا</h2><p>{{ s.vision }}</p><h2>تواصل معنا</h2><p>{{ s.address }}{% if s.phone %}<br>{{ s.phone }}{% endif %}{% if s.email %}<br>{{ s.email }}{% endif %}</p></section>
-{% endif %}</main>
-<footer><b>{{ s.name }}</b> — {{ s.tagline }}</footer><script src="assets/js/site.js"></script></body></html>
+<main id="app" data-page="{{page}}"></main><footer id="ft"><b>{{ s.name }}</b> — {{ s.tagline }}</footer><script src="assets/js/site.js"></script></body></html>

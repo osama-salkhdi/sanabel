@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: sanabel-academy
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 4 --timeout 120
+    buildFilter:
+      ignoredPaths:
+        - docs/data.json
+        - docs/uploads/**
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: GITHUB_REPO
+        value: osama-salkhdi/sanabel
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
